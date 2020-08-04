@@ -1,0 +1,2 @@
+urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.cloudflare.com:443
+urllib3.connectionpool - DEBUG - https://api.cloudflare.com:443 "GET /client/v4/user HTTP/1.1" 200 None
