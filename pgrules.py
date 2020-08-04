@@ -4,6 +4,7 @@ import logging
 import pprint
 
 logging.basicConfig(filename='PGRULES.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
+
 def user_details(api_key, acc_email):
     response = requests.get("https://api.cloudflare.com/client/v4/user", headers = {'X-Auth-Email': acc_email, 'X-Auth-Key': api_key, 'Content-Type': 'application/json'})
     user_dets = json.loads(response.text)
@@ -37,8 +38,10 @@ def main():
         zone_id = data["ZONE_ID"]
         domain_url = data["DOMAIN_URL"]
         dets = user_details(api_key, acc_email)
+    with open("ouput.json", "w") as out:
         print(json.dumps(dets, indent=4))
-        
+        json.dump(dets, out, indent=4)
+
 if __name__ == "__main__":
     main()
 
