@@ -1,2 +1,6 @@
+root - INFO - Jpg Page Rule Not added
+root - INFO - Svg Page Rule Not added
+root - INFO - Gif Page Rule Not added
+root - INFO - Html Page Rule Not added
 urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): api.cloudflare.com:443
 urllib3.connectionpool - DEBUG - https://api.cloudflare.com:443 "GET /client/v4/user HTTP/1.1" 200 None
