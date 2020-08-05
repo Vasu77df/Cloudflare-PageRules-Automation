@@ -67,6 +67,7 @@ Function Set-PageRules {
 
 Function List-PgRules {
     try {
+        Write-Host "-----------------Listing Page Rules of The Zone-------------------"
         Invoke-RestMethod -Uri $pg_uri -Method Get -Headers $headers  | ConvertTo-Json    
     }
     catch {
