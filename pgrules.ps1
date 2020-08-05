@@ -55,12 +55,13 @@ Function Set-PageRules {
     $png = $DOMAIN_URL + $CACHE_PNG
     $jpeg = $DOMAIN_URL + $CACHE_JPEG
 
+    # setting jpg page rules
     try {
         $body
-        Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body
+        Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
     }
     catch {
-        LogWrite "ERROR - $(Get-Date) - Setting Page Rules: Remote Server Returned an error"
+        LogWrite "ERROR - $(Get-Date) - Setting Page Rules: Remote Server Returned an Error"
     }
 }
 
@@ -76,8 +77,12 @@ Function List-PgRules {
 $RESTART = $true
 Do {
     Write-Host "-----------Welcome to Page Rules Builder----------------"
+    
+    
     List-UserDets
     
+
+
     $EXIT_CONFIRMATION = Read-Host -Prompt "Would you like to exit the program?[y/n]"
     if ($EXIT_CONFIRMATION -match 'y') {
         Write-Host "----------------------------Exiting----------------------------"
