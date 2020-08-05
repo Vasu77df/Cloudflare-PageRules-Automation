@@ -24,7 +24,7 @@ $headers=  @{
 
 $current_dir=(Get-Location)
 
-$Logfile = "C:\Users\vasudevan.perumal\Documents\Cloudflare-PageRules-Automation\$(gc env:computername)_pagerules.log"
+$Logfile = "C:\Apps\Logs\$(Get-Content env:computername)_pagerules.log"
 
 Function LogWrite
 {
@@ -35,7 +35,7 @@ Function LogWrite
 
 Function List-UserDets {
     try {
-        Write-Host "-----------------User Details--------------------------"
+        Write-Host "---------------------------------------User Details---------------------------------------------------"
         Invoke-RestMethod -Uri $user_uri -Method Get -Headers $headers | ConvertTo-Json
         LogWrite "VERBOSE - $(Get-Date) - Listing User Details: Cpatured User Details"    
     }
@@ -46,6 +46,7 @@ Function List-UserDets {
     
 }
 Function Set-PageRules { 
+    Write-Host "------------------------------------------Setting Page Rules----------------------------------------------"
     $jpg = $DOMAIN_URL + $CACHE_JPG
     $svg = $DOMAIN_URL + $CACHE_SVG
     $gif = $DOMAIN_URL + $CACHE_GIF
@@ -56,37 +57,52 @@ Function Set-PageRules {
     $jpeg = $DOMAIN_URL + $CACHE_JPEG
 
     # setting jpg page rules
-    try {
-        $body
-        Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
-    }
-    catch {
-        LogWrite "ERROR - $(Get-Date) - Setting Page Rules: Remote Server Returned an Error"
-    }
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.jpg*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: JPG Cached "    
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.svg*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: SVG Cached "   
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.gif*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: GIF Cached "   
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.css*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: CSS Cached "   
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.js*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: JS Cached "   
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.woff*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: WOFF Cached "   
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":"*example.com/*.png*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: PNG Cached "   
+    $body = '{"targets":[{"target":"url","constraint":{"operator":"matches","value":*example.com/*.jpeg*"}}],"actions":[{"id":"always_online","value":"on"}],"priority":1,"status":"active"}'
+    Invoke-RestMethod -Method Post -Uri $pg_uri -Headers $headers -Body $body | ConvertTo-Json
+    LogWrite "VERBOSE - $(Get-Date) - Setting Page Rules: JPEG Cached "   
 }
 
 Function List-PgRules {
     try {
-        Write-Host "-----------------Listing Page Rules of The Zone-------------------"
+        Write-Host "-----------------------------------------Listing Page Rules of The Zone-------------------------------------"
         Invoke-RestMethod -Uri $pg_uri -Method Get -Headers $headers  | ConvertTo-Json    
     }
     catch {
         LogWrite "ERROR - $(Get-Date) - Listing Page Rules: Remote Server Returned an error"
     }
-    
 }
 $RESTART = $true
 Do {
-    Write-Host "-----------Welcome to Page Rules Builder----------------"
-    
+    Write-Host "----------------------------------------------Welcome to Page Rules Builder--------------------------------------"
     
     List-UserDets
-    
-
+    List-PgRules
+    Set-PageRules
 
     $EXIT_CONFIRMATION = Read-Host -Prompt "Would you like to exit the program?[y/n]"
     if ($EXIT_CONFIRMATION -match 'y') {
-        Write-Host "----------------------------Exiting----------------------------"
+        Write-Host "------------------------------------------------Exiting------------------------------------------------------"
         $RESTART=$false
     }else {
         $RESTART=$true
